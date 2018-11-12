@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" debug="false">
+
+	<property name="APP_NAME" value="offer" />
+	<springProfile name="DEV">
+		<property name="LOG_HOME" value="/data/offer/logs/${APP_NAME}" />
+	</springProfile>
+	<springProfile name="TEST">
+		<property name="LOG_HOME" value="/data/offer/logs/${APP_NAME}" />
+	</springProfile>
+	<springProfile name="PROD">
+		<property name="LOG_HOME" value="/data/offer/logs/${APP_NAME}" />
+	</springProfile>
+
+	<contextName>${APP_NAME}</contextName>
+	
+	<!-- 控制台输出 -->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>[%X{userId}][%X{ip}] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{50} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 按照每天生成日志文件 -->
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/${APP_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<MaxHistory>120</MaxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>[%X{userId}][%X{ip}] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</encoder>
+		<!-- 加入则不会打印错误日志
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>DENY</onMatch>
+			<onMismatch>ACCEPT</onMismatch>
+		</filter>
+		 -->
+	</appender>
+	
+	<appender name="ERRORFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	        <fileNamePattern>${LOG_HOME}/${APP_NAME}.%d{yyyy-MM-dd}.error.log</fileNamePattern>
+			<MaxHistory>90</MaxHistory>
+	    </rollingPolicy>
+	    <encoder>
+	        <pattern>[%X{userId}] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+	    </encoder>
+	    <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印错误日志 -->
+	        <level>ERROR</level>
+	        <onMatch>ACCEPT</onMatch>
+	        <onMismatch>DENY</onMismatch>
+	    </filter>
+	</appender>
+	
+	
+	<!-- 日志输出级别   生产环境level:INFO， ref: FILE -->
+	<!-- 日志输出级别 -->
+	<!-- <root level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ERRORFILE" />
+		<appender-ref ref="FILE" />
+	</root> -->
+	
+	<!-- 开发 -->
+	<springProfile name="DEV">
+		<root level="INFO">
+			<appender-ref ref="CONSOLE" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+	
+	<!-- 测试 -->
+	<springProfile name="TEST">
+		<root level="INFO">
+			<appender-ref ref="ERRORFILE" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+	
+	<!-- 生产 -->
+	<springProfile name="PROD">
+		<root level="INFO">
+			<appender-ref ref="ERRORFILE" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+	
+	<!-- 第三方包日志级别   发布生产环境请全部注释掉 -->
+	<!-- show parameters for hibernate sql 专为 Hibernate 定制
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE" />  
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor"  level="DEBUG" />  
+    <logger name="org.hibernate.SQL" level="DEBUG" />
+    <logger name="org.hibernate.type" level="TRACE" />
+    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />  
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" /> 
+   -->
+</configuration>

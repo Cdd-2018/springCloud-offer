@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chendongdong.offer.mapper.UserMapper">
+
+    <select id="getAll" resultType="java.util.Map">
+        select * from oms_test
+    </select>
+
+    <insert id="insertBatchUser" parameterType="java.util.List">
+        INSERT INTO oms_test(name,password) VALUES
+        <foreach collection ="list" item="item" separator =",">
+            (#{item.name},#{item.password})
+        </foreach>
+    </insert>
+
+</mapper>
