@@ -62,7 +62,5 @@ public class UserController {
     public User getJpaUserByName(String name) {
         User user = userJpaDao.findByName(name);
         return user;
-
-
     }
 }
