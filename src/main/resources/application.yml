@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: offer-one
+    name: offer
   datasource:
     url: jdbc:mysql://${datasource.url}?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: ${datasource.username}
